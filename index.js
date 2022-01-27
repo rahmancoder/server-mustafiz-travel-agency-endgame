@@ -34,7 +34,9 @@ async function run() {
         console.log('database connected');
 
         const database = client.db('mustafiz_endGame');
-        const servicesCollection = database.collection('blogs');
+        const travelCollection = database.collection('travel');
+        const blogsCollection = database.collection('blogs');
+        const usersCollection = database.collection('users');
 
 
 
@@ -120,7 +122,7 @@ async function run() {
 
         //GET Blogs API
         app.get('/blogs', async (req, res) => {
-            const cursor = productCollection.find({});
+            const cursor = blogsCollection.find({});
             const page = req.query.page;
             const size = parseInt(req.query.size);
             let blogs;
