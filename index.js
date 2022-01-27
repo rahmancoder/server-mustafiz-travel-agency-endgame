@@ -37,7 +37,26 @@ async function run() {
         const servicesCollection = database.collection('blogs');
 
 
+        //GET Blogs API
+        app.get('/blogs', async (req, res) => {
+            const cursor = productCollection.find({});
+            const page = req.query.page;
+            const size = parseInt(req.query.size);
+            let blogs;
+            const count = await cursor.count();
 
+            if (page) {
+                blogs = await cursor.skip(page * size).limit(size).toArray();
+            }
+            else {
+                blogs = await cursor.toArray();
+            }
+
+            res.send({
+                count,
+                blogs
+            });
+        });
 
 
     }
