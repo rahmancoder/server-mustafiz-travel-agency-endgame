@@ -34,9 +34,9 @@ async function run() {
         console.log('database connected');
 
         const database = client.db('mustafiz_endGame');
-        const travelCollection = database.collection('travel');
         const blogsCollection = database.collection('blogs');
         const usersCollection = database.collection('users');
+        const travelCollection = database.collection('travel');
 
 
 
@@ -118,10 +118,48 @@ async function run() {
             res.json(result);
         })
 
+        // Blog Post added
+        app.post('/blog', async (req, res) => {
+            const blog = req.body;
+            console.log('hit the post api', blog);
+
+            const result = await blogsCollection.insertOne(blog);
+            console.log(result);
+            res.json(result)
+        });
 
 
-        //GET Blogs API
-        app.get('/blogs', async (req, res) => {
+
+        app.delete('/blogs/:id', async (req, res) => {
+            const id = req.params.id;
+            console.log(id);
+            const query = { _id: ObjectId(id) };
+            // const query = { _id: id }
+            // console.log(query);
+            const result = await blogsCollection.deleteOne(query);
+
+            console.log('deleting blog with id ', result);
+
+            res.json(result);
+            // res.send(result);
+        })
+
+        // Blog status update pending to approved
+        app.put("/statusupdate/:id", async (req, res) => {
+            const filter = { _id: ObjectId(req.params.id) };
+            console.log(req.params.id);
+            const result = await blogsCollection.updateOne(filter, {
+                $set: {
+                    status: req.body.status,
+                },
+            });
+            res.send(result);
+            console.log(result);
+        });
+
+
+        //GET Blogs API and pagination tried
+        app.get('/allblog', async (req, res) => {
             const cursor = blogsCollection.find({});
             const page = req.query.page;
             const size = parseInt(req.query.size);
